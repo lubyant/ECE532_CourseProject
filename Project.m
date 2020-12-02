@@ -55,5 +55,36 @@ erRate2 = 1- sum(y_v == y2)/length(y_v);
 %     v1_ind = A
 % end
 
-
+cvp = cvpartition(60000,'KFold',6);
 % doing a KNN classification
+for i = 1:10
+mdl = fitcknn(A,y,'NumNeighbor',i,'distance','euclidean','Standardize',1);
+label = predict(mdl,A2);
+err1(i) = 1- sum(label == y2)/length(label);
+end
+
+figure
+plot(i,err1)
+xlabel("K-value")
+ylabel("error rate")
+title("Euclidean Distance")
+for i = 1:10
+mdl = fitcknn(A,y,'NumNeighbor',i,'distance','cityblock','Standardize',1);
+label = predict(mdl,A2);
+err2(i) = 1- sum(label == y2)/length(label);
+end
+for i = 1:10
+mdl = fitcknn(A,y,'NumNeighbor',i,'distance','correlation','Standardize',1);
+label = predict(mdl,A2);
+err3(i) = 1- sum(label == y2)/length(label);
+end
+for i = 1:10
+mdl = fitcknn(A,y,'NumNeighbor',i,'distance','minkowski','Standardize',1);
+label = predict(mdl,A2);
+err4(i) = 1- sum(label == y2)/length(label);
+end
+figure
+plot(i,err1,i,err2,i,err3,i,err4)
+xlabel("K-value")
+ylabel("error rate")
+legend("Euclidian","Cityblock","correlation","Minkowski")
